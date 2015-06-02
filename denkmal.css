@@ -2,9 +2,10 @@ body {
   font: 10px sans-serif;
 }
 .bar rect {
-  fill: steelblue;
   shape-rendering: crispEdges;
 }
+.bar rect.Ja {fill: blue}
+.bar rect.Nein {fill: SteelBlue}
 .bar text {
   fill: #fff;
 }

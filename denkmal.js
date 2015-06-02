@@ -121,14 +121,29 @@
       .enter()
       .append("g")
       .attr("class", "bar")
+      .attr("id", function(d) {
+        return d.key;
+      })
       .attr("transform", function(d) {
         return "translate(" + xScale(new Date("" + d.key + "0", 0, 1)) + "," + yScale(countObjectsInYearGroup(d)) + ")";
       });
 
-    bars.append("rect")
+    bars.selectAll("rect")
+      .data(function(d) {
+        return prepareForStacking(d);
+      })
+      .enter()
+      .append("rect")
       .attr("width", barWidth)
+      .attr("y", function(d) {
+        return chartDimensions.height - yScale(d.start);
+      })
       .attr("height", function(d) {
-        return height - yScale(countObjectsInYearGroup(d));
+        //return height - yScale(countObjectsInYearGroup(d));
+        return height - yScale(d.values.length);
+      })
+      .attr("class", function(d) {
+        return d.key;
       });
   }
 
@@ -141,34 +156,52 @@
   }
 
   function appendLabels(bars, data) {
-    d3.selectAll(".bar")
+    d3.selectAll(".bar rect")
       .on("mouseover", highlightBar)
       .on("mouseout", dehighlightBar);
 
     function highlightBar(d) {
       d3.select("#tooltip" + d.key).remove();
 
-      d3.select(this)
+      d3.select(this.parentNode)
         .append("text")
-        .attr("id", "tooltip" + d.key)
+        .attr("id", function(d) {
+          return "tooltip" + d.key;
+        })
         .attr("class", "tooltip")
         .attr("text-anchor", "middle")
         .attr("transform", "translate(0, -5)")
         .style("opacity", 0)
-        .text("" + countObjectsInYearGroup(d) + " Objects")
+        .text(function() {
+          var suffix = "";
+          if(d.key === "Nein") {
+            suffix = " im Inventar";
+          } else if(d.key === "Ja") {
+            suffix = " unter Schutz";
+          }
+
+          return "" + d.values.length + suffix
+        })
         .transition(1000)
         .style("opacity", 1);
 
-      d3.select(this).select("rect")
-      .transition(1000)
+      d3.select(this)
+        .transition(1000)
         .style("fill", "red");
     };
 
     function dehighlightBar(d) {
-      d3.select("#tooltip" + d.key).remove();
-      d3.select(this).select("rect")
+      d3.select("#tooltip" + this.parentNode.id).remove();
+      d3.select(this)
         .transition(1000)
-        .style("fill", "steelblue");
+        .style("fill", function() {
+          var selection = d3.select(this);
+          if (selection.classed("Nein")) {
+            return "steelblue";
+          } else if (selection.classed("Ja")) {
+            return "blue";
+          }
+        });
     }
   }
 
@@ -176,5 +209,15 @@
     return (containerWidth / numElements) - 1;
   }
 
+  function prepareForStacking(d) {
+    if (d.values.length == 1) {
+      d.values[0].start = 0;
+    } else {
+      d.values[0].start = d.values[1].values.length;
+      d.values[1].start = 0;
+    }
+
+    return d.values;
+  }
 
 }());
