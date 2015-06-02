@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  d3.json("data/denkmalschutzobjekt.json", draw)
+  d3.json("../data/denkmalschutzobjekt.json", draw)
 
   var containerDimensions = {
       width: 900,
