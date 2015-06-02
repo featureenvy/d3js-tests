@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3 Tests</title>
+    <meta charset="utf-8">
+    <script src="d3.js" charset="utf-8"></script>
+    <script src="my.js"></script>
+    <link rel="stylesheet" href="my.css" type="text/css">
+  </head>
+
+  <body>
+    <script>
+      d3.json("data/service_status.json", draw);
+      d3.json("data/plaza_traffic.json", drawPlaza);
+      d3.json("data/bus_perf.json", accidentStats);
+      d3.json("data/turnstile_traffic.json", drawTurnstileTraffic);
+    </script>
+
+    <section>
+      <h1>Service Status</h1>
+      <div id="serviceStatus"></div>
+    </section>
+
+    <section>
+      <h1>Plaza Traffic</h1>
+      <div id="plazaTraffic"></div>
+    </section>
+
+    <section>
+      <h1>Accident Stats</h1>
+      <div id="accidentStats"></div>
+    </section>
+
+    <section>
+      <h1>Turnstile Traffic</h1>
+      <div id="turnstileTraffic"></div>
+    </section>
+  </body>
