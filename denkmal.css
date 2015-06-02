@@ -8,6 +8,9 @@ body {
 .bar text {
   fill: #fff;
 }
+.bar .tooltip {
+  fill: #000;
+}
 .axis path, .axis line {
   fill: none;
   stroke: #000;

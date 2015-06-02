@@ -20,8 +20,26 @@
     yearBinSize = 10;
 
   function draw(data) {
-    var cleanedData = removeInvalidDates(data);
+    var nest = prepareData(data);
 
+    var years = extractAllYears(nest);
+    var yearExtent = d3.extent(years);
+
+    var numberOfElements = (yearExtent[1].getYear() - yearExtent[0].getYear()) / 10;
+    var barWidth = calculateBarWidth(chartDimensions.width, numberOfElements);
+
+    // setup scales
+    var xScale = createXScale(yearExtent, chartDimensions.width);
+    var yScale = createYScale(nest, chartDimensions.height);
+
+    var svg = appendSvg("#newChart", containerDimensions, margins);
+    var timeAxis = appendTimeAxis(svg, xScale, chartDimensions.height, barWidth)
+    var bars = appendBars(svg, nest, xScale, yScale, chartDimensions.height, barWidth);
+    var labels = appendLabels(bars, nest);
+  }
+
+  function prepareData(data) {
+    var cleanedData = removeInvalidDates(data);
     var nest = d3.nest()
       .key(function(d) {
         return Math.floor(d.properties.Baujahr / yearBinSize);
@@ -30,111 +48,13 @@
         return d.properties.Schutzstatus;
       })
       .entries(cleanedData);
-    var years = extractAllYears(nest);
-    var yearExtent = d3.extent(years);
-    var xScale = d3.time.scale()
-      .domain(yearExtent)
-      .range([0, chartDimensions.width]);
-    var yScale = d3.scale.linear()
-      .range([chartDimensions.height, 0])
-      .domain([0, d3.max(nest, function(nestEntry) {
-        return countObjectsInYearGroup(nestEntry);
-      })]);
 
-    var numberOfElements = (yearExtent[1].getYear() - yearExtent[0].getYear()) / 10;
-    var barWidth = calculateBarWidth(chartDimensions.width, numberOfElements);
-
-    var svg = appendSvg("#newChart", containerDimensions, margins);
-
-    var timeAxis = d3.svg.axis()
-      .scale(xScale)
-      .ticks(d3.time.years, 10);
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0, " + chartDimensions.height + ")")
-      .call(timeAxis)
-      .selectAll("text")
-      .style("text-anchor", "middle")
-      .attr("transform", "rotate(-90) translate(-20, " + -(barWidth) + ")")
-
-    d3.select("path.domain")
-      .attr("transform", "translate(" + barWidth / 2 + ")");
-    d3.selectAll(".tick")
-      .attr("width", barWidth);
-    d3.selectAll(".tick line")
-      .attr("transform", "translate(" + barWidth / 2 + ")");
-
-    var bars = svg.selectAll(".bar")
-      .data(nest)
-      .enter()
-      .append("g")
-      .attr("class", "bar")
-      .attr("transform", function(d) {
-        return "translate(" + xScale(new Date("" + d.key + "0", 0, 1)) + "," + yScale(countObjectsInYearGroup(d)) + ")";
-      });
-
-    bars.append("rect")
-      .attr("width", barWidth)
-      .attr("height", function(d) {
-        return chartDimensions.height - yScale(countObjectsInYearGroup(d));
-      });
-
-    ///////////////////////////////////////////
-    // OLD
-    ///////////////////////////////////////////
-
-    // // x axis
-    // var years = extractAllYearsOld(cleanedData);
-    // var yearExtent = d3.extent(years, function(d) {
-    //   return d;
-    // });
-    // var xScale = d3.time.scale()
-    //   .domain(yearExtent)
-    //   .range([0, chartDimensions.width]);
-    //
-    // // y axis
-    // var histogram = d3.layout.histogram()
-    //   .bins((yearExtent[1].getYear() - yearExtent[0].getYear()) / yearBinSize)(years);
-    // var histoExtent = d3.extent(histogram, function(d) {
-    //   return d.y;
-    // });
-    // var yScale = d3.scale.linear()
-    //   .domain(histoExtent)
-    //   .range([chartDimensions.height, 0]);
-    //
-    // var svg = appendSvg("body", containerDimensions, margins);
-    // var bar = appendBars(svg, histogram, chartDimensions, xScale, yScale);
-    //
-    // var timeAxis = d3.svg.axis()
-    //   .scale(xScale)
-    //   .ticks(d3.time.years, 10);
-    // svg.append("g")
-    //   .attr("class", "x axis")
-    //   .attr("transform", "translate(0, " + chartDimensions.height + ")")
-    //   .call(timeAxis)
-    //   .selectAll("text")
-    //   .attr("transform", "rotate(-90) translate(-20)");
-
-
-    // bar.append("text")
-    //   .attr("dy", ".75em")
-    //   .attr("y", 6)
-    //   .attr("x", x(histogram[0].dx) / 2)
-    //   .attr("text-anchor", "middle")
-    //   .text(function(d) {
-    //     return formatCount(d.y);
-    //   });
+    return nest;
   }
 
   function removeInvalidDates(data) {
     return data.features.filter(function(d) {
       return !Number.isNaN(Number.parseInt(d.properties.Baujahr));
-    });
-  }
-
-  function extractAllYearsOld(data) {
-    return data.map(function(d) {
-      return new Date(Number.parseInt(d.properties.Baujahr), 0, 1);
     });
   }
 
@@ -144,36 +64,22 @@
     });
   }
 
-  function appendSvg(selector, containerDimensions, margins) {
-    return d3.select(selector).append("svg")
-      .attr("width", containerDimensions.width)
-      .attr("height", containerDimensions.height)
-      .append("g")
-      .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+  function createXScale(extent, width) {
+    var xScale = d3.time.scale()
+      .domain(extent)
+      .range([0, width]);
+
+    return xScale;
   }
 
-  function appendBars(element, histogram, containerDimensions, xScale, yScale) {
-    var bars = element.selectAll(".bar")
-      .data(histogram)
-      .enter()
-      .append("g")
-      .attr("class", "bar")
-      .attr("transform", function(d) {
-        return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
-      });
+  function createYScale(data, height) {
+    var yScale = d3.scale.linear()
+      .domain([0, d3.max(data, function(nestEntry) {
+        return countObjectsInYearGroup(nestEntry);
+      })])
+      .range([height, 0]);
 
-    var barWidth = calculateBarWidth(chartDimensions.width, bars.size());
-
-    bars.append("rect")
-      .attr("x", 1)
-      .attr("width", barWidth)
-      .attr("height", function(d) {
-        return containerDimensions.height - yScale(d.y);
-      });
-  }
-
-  function calculateBarWidth(containerWidth, numElements) {
-    return (containerWidth / numElements) - 1;
+    return yScale;
   }
 
   function countObjectsInYearGroup(nestEntry) {
@@ -188,4 +94,87 @@
 
     return count;
   }
+
+  function appendTimeAxis(element, xScale, height, barWidth) {
+    var timeAxis = d3.svg.axis()
+      .scale(xScale)
+      .ticks(d3.time.years, 10);
+
+    element.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0, " + height + ")")
+      .call(timeAxis)
+      .selectAll("text")
+      .style("text-anchor", "middle")
+      .attr("transform", "rotate(-90) translate(-20, " + -(barWidth) + ")")
+
+    // move labels and tick into the center of each bar
+    d3.select("path.domain")
+      .attr("transform", "translate(" + barWidth / 2 + ")");
+    d3.selectAll(".tick line")
+      .attr("transform", "translate(" + barWidth / 2 + ")");
+  }
+
+  function appendBars(svg, data, xScale, yScale, height, barWidth) {
+    var bars = svg.selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("g")
+      .attr("class", "bar")
+      .attr("transform", function(d) {
+        return "translate(" + xScale(new Date("" + d.key + "0", 0, 1)) + "," + yScale(countObjectsInYearGroup(d)) + ")";
+      });
+
+    bars.append("rect")
+      .attr("width", barWidth)
+      .attr("height", function(d) {
+        return height - yScale(countObjectsInYearGroup(d));
+      });
+  }
+
+  function appendSvg(selector, containerDimensions, margins) {
+    return d3.select(selector).append("svg")
+      .attr("width", containerDimensions.width)
+      .attr("height", containerDimensions.height)
+      .append("g")
+      .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+  }
+
+  function appendLabels(bars, data) {
+    d3.selectAll(".bar")
+      .on("mouseover", highlightBar)
+      .on("mouseout", dehighlightBar);
+
+    function highlightBar(d) {
+      d3.select("#tooltip" + d.key).remove();
+
+      d3.select(this)
+        .append("text")
+        .attr("id", "tooltip" + d.key)
+        .attr("class", "tooltip")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate(0, -5)")
+        .style("opacity", 0)
+        .text("" + countObjectsInYearGroup(d) + " Objects")
+        .transition(1000)
+        .style("opacity", 1);
+
+      d3.select(this).select("rect")
+      .transition(1000)
+        .style("fill", "red");
+    };
+
+    function dehighlightBar(d) {
+      d3.select("#tooltip" + d.key).remove();
+      d3.select(this).select("rect")
+        .transition(1000)
+        .style("fill", "steelblue");
+    }
+  }
+
+  function calculateBarWidth(containerWidth, numElements) {
+    return (containerWidth / numElements) - 1;
+  }
+
+
 }());
