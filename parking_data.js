@@ -7,28 +7,54 @@
   var callback, previousData;
 
   window.Parking.Data = {
-    loadData: loadData
+    loadData: loadData,
+    loadAllDataForDay: loadAllDataForDay
   };
 
+  function loadAllDataForDay(day) {
+    var possibleFiles = [];
+    for (var hour = 8; hour < 18; hour++) {
+      for (var min = 0; min < 60; min++) {
+        possibleFiles.push("parking_data_" + day + format(hour) + format(min) + ".xml");
+      }
+    }
+
+    var allData = {};
+    possibleFiles.forEach(function(fileName) {
+      loadData(fileName, callbackWrapper(fileName))
+
+      function callbackWrapper(fileName) {
+        return function allCallback(error, data) {
+          var cleanedData = cleanData(error, data);
+          if (cleanedData) {
+            allData[fileName] = cleanedData;
+          }
+        }
+      }
+    });
+
+    return allData;
+  }
+
   function loadData(path, cb) {
-    if(!cb) {
+    if (!cb) {
       console.error("Callback not set, no data will be returned.");
       return;
     }
 
     callback = cb;
 
-    d3.xml(path, "application/xml", cleanData);
+    d3.xml(path, "application/xml", cb);
   }
 
   function cleanData(error, data) {
-    if(!data) {
-      if(!previousData) {
+    if (!data) {
+      if (!previousData) {
         console.log("Have no current data nor previous data. Skipping.");
         return;
       }
       console.log("data could not be read. Working with old data");
-      callback(mergeData(previousData, previousData));
+      //callback(mergeData(previousData, previousData));
       return;
     }
 
@@ -39,6 +65,8 @@
 
     previousData = mergedData;
     callback(mergedData);
+
+    return mergedData;
   }
 
   function cleanFeed(elementsWithStuff) {
@@ -75,11 +103,11 @@
   }
 
   function mergeData(previousData, nextData) {
-    if(!previousData) {
+    if (!previousData) {
       previousData = nextData; // so we can still initialize properly.
     }
 
-    for(var i = 0; i < previousData.length; i++) {
+    for (var i = 0; i < previousData.length; i++) {
       var previous = previousData[i];
       var next = nextData[i];
 
@@ -88,5 +116,13 @@
     }
 
     return nextData;
+  }
+
+  function format(time) {
+    if (time < 10) {
+      return "0" + time;
+    } else {
+      return time.toString();
+    }
   }
 }());
