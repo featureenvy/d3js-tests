@@ -1,29 +1,40 @@
 (function() {
   'use strict';
-  if(!window.Parking) {
+  if (!window.Parking) {
     window.Parking = {};
   }
 
-  var callback;
+  var callback, previousData;
 
-  window.Parking.Data = function(cb) {
+  window.Parking.Data = {
+    loadData: loadData
+  };
+
+  function loadData(path, cb) {
     if(!cb) {
-      error("Needs a callback to give back the data.");
+      console.error("Callback not set, no data will be returned.");
+      return;
     }
 
     callback = cb;
 
-    return {
-      loadData: loadData
-    }
-  };
+    d3.xml(path, "application/xml", cleanData);
+  }
 
-  function loadData(error, data) {
+  function cleanData(error, data) {
+    if(!data) {
+      console.log("data could not be read.");
+      callback(previousData);
+      return;
+    }
+
     var elementsPlusOtherStuff = data.children[0].children[0].children;
     var elementsWithoutStuff = cleanFeed(elementsPlusOtherStuff);
-    var elements = extractInterestingInfo(elementsWithoutStuff);
+    var newData = extractInterestingInfo(elementsWithoutStuff);
+    var mergedData = mergeData(previousData, newData);
 
-    return callback(elements);
+    previousData = mergedData;
+    callback(mergedData);
   }
 
   function cleanFeed(elementsWithStuff) {
@@ -57,5 +68,21 @@
     function extractFreeSpaces(status) {
       return Number.parseInt(status.split("/")[1].trim());
     }
+  }
+
+  function mergeData(previousData, nextData) {
+    if(!previousData) {
+      previousData = nextData; // so we can still initialize properly.
+    }
+
+    for(var i = 0; i < previousData.length; i++) {
+      var previous = previousData[i];
+      var next = nextData[i];
+
+      next.previousFreeSpaces = previous.freeSpaces;
+      next.additionalFreeSpaces = next.freeSpaces - previous.freeSpaces;
+    }
+
+    return nextData;
   }
 }());

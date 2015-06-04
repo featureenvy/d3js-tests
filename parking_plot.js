@@ -5,10 +5,8 @@
     window.Parking = {};
   }
 
-  window.Parking.Plot = function() {
-    return {
-      updatePlot: updatePlot
-    }
+  window.Parking.Plot = {
+    updatePlot: updatePlot
   };
 
   var containerDimensions = {
@@ -31,8 +29,9 @@
   var isInitialized = false;
 
   function updatePlot(elements) {
-    if(!isInitialized) {
+    if (!isInitialized) {
       initPlot(elements);
+      isInitialized = true;
     }
 
     drawBars(svg, elements, xScale, yScale, chartDimensions.height, barWidth);
@@ -46,9 +45,7 @@
       .rangeRoundPoints([0, chartDimensions.width]);
 
     yScale = d3.scale.linear()
-      .domain(d3.extent(parkingData.map(function(d) {
-        return d.freeSpaces;
-      })))
+      .domain([0, 1000])
       .range([chartDimensions.height, 0]);
 
     barWidth = (chartDimensions.width / xScale.range().length) - 1;
@@ -134,7 +131,7 @@
       .transition()
       .duration(animationTime)
       .tween("freeSpacesText", function(d) {
-        var i = d3.interpolate(this.textContent, d.freeSpaces);
+        var i = d3.interpolate(d.previousFreeSpaces, d.freeSpaces);
         return function(t) {
           this.textContent = Math.round(i(t));
         }

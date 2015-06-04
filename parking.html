@@ -11,8 +11,10 @@
   </head>
 
   <body>
+    <h1>Parking Statistics</h1>
+    <span>Time:<span id="time"></span>
     <div id="parkingPlot"></div>
-    <input type="button" onClick="parkingData[17].freeSpaces = 200; parkingData[17].additionalFreeSpaces = -799; updateData()" value="200"></input>
-    <input type="button" onClick="parkingData[17].freeSpaces = 999; parkingData[17].additionalFreeSpaces = 799; updateData()" value="800"></input>
+    <input type="button" onClick="Parking.Main.loadData('parking_data_1531741.xml')" value="Old"></input>
+    <input type="button" onClick="Parking.Main.loadData('parking_data_1551457.json')" value="New"></input>
 
   </body>
