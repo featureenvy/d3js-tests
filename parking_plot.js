@@ -72,7 +72,7 @@
       .call(nameAxis)
       .selectAll("text")
       .style("text-anchor", "end")
-      .attr("transform", "rotate(-90) translate(-5, 0)")
+      .attr("transform", "rotate(-65) translate(-5, 0)")
 
     var nameGrid = nameAxis.orient("top")
       .tickSize(-chartDimensions.height, 0);
@@ -88,7 +88,7 @@
   function drawBars(svg, data, xScale, yScale, height, barWidth) {
     var bars = svg.selectAll(".bar")
       .data(data, function(d) {
-        return d.name + " " + d.freeSpaces
+        return d.name + " " + d.freeSpaces + " " + d.additionalFreeSpaces + " " + d.previousFreeSpaces;
       });
 
     // append new data
@@ -131,9 +131,15 @@
       .transition()
       .duration(animationTime)
       .tween("freeSpacesText", function(d) {
-        var i = d3.interpolate(d.previousFreeSpaces, d.freeSpaces);
-        return function(t) {
-          this.textContent = Math.round(i(t));
+        if (d.previousFreeSpaces === d.freeSpaces) {
+          return function(t) {
+            this.textContent = d.freeSpaces;
+          }
+        } else {
+          var i = d3.interpolate(d.previousFreeSpaces, d.freeSpaces);
+          return function(t) {
+            this.textContent = Math.round(i(t));
+          }
         }
       });
 

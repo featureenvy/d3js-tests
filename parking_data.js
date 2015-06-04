@@ -23,6 +23,10 @@
 
   function cleanData(error, data) {
     if(!data) {
+      if(!previousData) {
+        console.log("Have no current data nor previous data. Skipping.");
+        return;
+      }
       console.log("data could not be read. Working with old data");
       callback(mergeData(previousData, previousData));
       return;
