@@ -23,7 +23,7 @@
       width: containerDimensions.width - margins.left - margins.right,
       height: containerDimensions.height - margins.top - margins.bottom
     },
-    animationTime = 1000;
+    animationTime = 500;
 
   var svg, xScale, yScale, barWidth;
   var isInitialized = false;
@@ -140,6 +140,20 @@
     bars.each(function(d) {
       var elem = d3.select(this);
       if (d.additionalFreeSpaces != 0) {
+        elem.select("rect")
+          .transition()
+          .duration(animationTime / 2)
+          .style("fill", function(d) {
+            if (d.additionalFreeSpaces > 0) {
+              return "green";
+            } else {
+              return "red";
+            }
+          })
+          .transition()
+          .duration(animationTime / 2)
+          .style("fill", "black");
+
         elem.insert("rect", "text")
           .attr("class", "transition-bar")
           .attr("transform", function() {
@@ -153,13 +167,7 @@
           .attr("height", function() {
             return height - yScale(Math.abs(d.additionalFreeSpaces));
           })
-          .style("fill", function() {
-            if (d.additionalFreeSpaces > 0) {
-              return "green";
-            } else {
-              return "red";
-            }
-          })
+          .style("fill", "black")
           .attr("class", function(d) {
             if (d.additionalFreeSpaces > 0) {
               return "more-free-spaces";
@@ -168,7 +176,15 @@
             }
           })
           .transition()
-          .duration(animationTime)
+          .duration(animationTime / 2)
+          .style("fill", function() {
+            if (d.additionalFreeSpaces > 0) {
+              return "green";
+            } else {
+              return "red";
+            }
+          })
+          .duration(animationTime / 2)
           .style("opacity", "0")
           .each("end", function(d) {
             var fillerRect = d3.select(this);

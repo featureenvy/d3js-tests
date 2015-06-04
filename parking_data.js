@@ -23,8 +23,8 @@
 
   function cleanData(error, data) {
     if(!data) {
-      console.log("data could not be read.");
-      callback(previousData);
+      console.log("data could not be read. Working with old data");
+      callback(mergeData(previousData, previousData));
       return;
     }
 
