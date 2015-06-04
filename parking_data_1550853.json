@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <title>FEED Parkleitsystem Stadt Zürich</title>
+    <link>http://www.plszh.ch</link>
+    <description>http://www.plszh.ch/plsFeed/rss?type=rss_0.92 | rss_0.93 | rss_0.94 | rss_1.0 | rss_2.0 (=default) | atom_0.3 | atom_1.0</description>
+    <copyright>Stadt Zürich, Dienstabteilung Verkehr, Regelung + Entwicklung (2007 / created using ROME)</copyright>
+    <dc:rights>Stadt Zürich, Dienstabteilung Verkehr, Regelung + Entwicklung (2007 / created using ROME)</dc:rights>
+    <item>
+      <title>Parkgarage am Central / Seilergraben</title>
+      <link>http://www.plszh.ch/parkhaus/central.jsp?pid=central</link>
+      <description>open /   48</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/central.jsp?pid=central</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus Accu / Otto-Schütz-Weg</title>
+      <link>http://www.plszh.ch/parkhaus/accu.jsp?pid=accu</link>
+      <description>open /  142</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/accu.jsp?pid=accu</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus Albisriederplatz / Badenerstrasse 380</title>
+      <link>http://www.plszh.ch/parkhaus/albisriederplatz.jsp?pid=albisriederplatz</link>
+      <description>open /   61</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/albisriederplatz.jsp?pid=albisriederplatz</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus Bleicherweg / Beethovenstrasse 35</title>
+      <link>http://www.plszh.ch/parkhaus/bleicherweg.jsp?pid=bleicherweg</link>
+      <description>open /   57</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/bleicherweg.jsp?pid=bleicherweg</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus Center Eleven / Sophie-Täuber-Strasse 4</title>
+      <link>http://www.plszh.ch/parkhaus/center_11.jsp?pid=center_11</link>
+      <description>open /  262</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/center_11.jsp?pid=center_11</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus City Parking / Gessnerallee 14</title>
+      <link>http://www.plszh.ch/parkhaus/cp.jsp?pid=cp</link>
+      <description>open /  423</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/cp.jsp?pid=cp</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus Cityport / Affolternstrasse 56</title>
+      <link>http://www.plszh.ch/parkhaus/cityport.jsp?pid=cityport</link>
+      <description>open /   35</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/cityport.jsp?pid=cityport</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus Crowne Plaza / Badenerstrasse 420</title>
+      <link>http://www.plszh.ch/parkhaus/crowne_plaza.jsp?pid=crowne_plaza</link>
+      <description>open /  294</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/crowne_plaza.jsp?pid=crowne_plaza</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      <title>Parkhaus Dorflinde / Schwamendingenstrasse 31</title>
+      <link>http://www.plszh.ch/parkhaus/dorflinde.jsp?pid=dorflinde</link>
+      <description>open /   40</description>
+      <pubDate>Thu, 04 Jun 2015 06:53:31 GMT</pubDate>
+      <guid>http://www.plszh.ch/parkhaus/dorflinde.jsp?pid=dorflinde</guid>
+      <dc:date>2015-06-04T06:53:31Z</dc:date>
+    </item>
+    <item>
+      

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Denkmalschutz</title>
+    <title>Parking Data</title>
     <meta charset="utf-8">
     <script src="d3.js" charset="utf-8"></script>
     <script src="parking.js"></script>
@@ -10,4 +10,7 @@
 
   <body>
     <div id="parkingPlot"></div>
+    <input type="button" onClick="parkingData[17].freeSpaces = 200; updateData()" value="200"></input>
+    <input type="button" onClick="parkingData[17].freeSpaces = 800; updateData()" value="800"></input>
+
   </body>

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  d3.xml("parking_data_1531741.xml", initialize);
+  d3.xml("parking_data_1550829.json", "application/xml", initialize);
 
   var containerDimensions = {
       width: 1100,
@@ -20,6 +20,7 @@
 
   function initialize(error, data) {
     var elements = cleanFeedForPlot(data);
+    window.parkingData = elements;
 
     drawPlot(elements);
   }
@@ -39,8 +40,12 @@
 
     var barWidth = (chartDimensions.width / xScale.range().length) - 1;
     var svg = appendSvg("#parkingPlot", containerDimensions, margins);
-    var nameAxis = appendNameAxis(svg, xScale, chartDimensions.height, barWidth)
-    var bars = appendBars(svg, parkingData, xScale, yScale, chartDimensions.height, barWidth)
+    var nameAxis = appendNameAxis(svg, xScale, chartDimensions.height, barWidth);
+    var bars = appendBars(svg, parkingData, xScale, yScale, chartDimensions.height, barWidth);
+
+    window.updateData = function() {
+      appendBars(svg, parkingData, xScale, yScale, chartDimensions.height, barWidth);
+    }
   }
 
   function appendSvg(selector, containerDimensions, margins) {
@@ -63,19 +68,16 @@
       .selectAll("text")
       .style("text-anchor", "middle")
       .attr("transform", "rotate(-90) translate(-20, " + -(barWidth) + ")")
-
-    // TODO yolo
-    // // move labels and tick into the center of each bar
-    // d3.select("path.domain")
-    //   .attr("transform", "translate(" + barWidth / 2 + ")");
-    // d3.selectAll(".tick line")
-    //   .attr("transform", "translate(" + barWidth / 2 + ")");
   }
 
   function appendBars(svg, data, xScale, yScale, height, barWidth) {
     var bars = svg.selectAll(".bar")
-      .data(data)
-      .enter()
+      .data(data, function(d) {
+        return d.name + " " + d.freeSpaces
+      });
+
+    // append new data
+    var newGroups = bars.enter()
       .append("g")
       .attr("class", "bar")
       .attr("id", function(d) {
@@ -84,21 +86,52 @@
       .attr("transform", function(d) {
         return "translate(" + xScale(d.name) + "," + yScale(d.freeSpaces) + ")";
       });
-
-    bars.append("rect")
+    newGroups.append("rect")
       .attr("width", barWidth)
-      .attr("height", function(d) {
-        return height - yScale(d.freeSpaces);
-      });
+      .style("fill", "black");
 
-    bars.append("text")
+    newGroups.append("text")
       .attr("dy", ".75em")
       .attr("y", 6)
       .attr("x", barWidth / 2)
       .attr("text-anchor", "middle")
-      .text(function(d) {
+
+    // set height and params for old and new data
+    bars
+      .attr("data-free-spaces", function(d) {
         return d.freeSpaces;
+      })
+      .attr("transform", function(d) {
+        return "translate(" + xScale(d.name) + "," + yScale(d.freeSpaces) + ")";
+      }).each(function(d) {
+        var elem = d3.select(this);
+        
       });
+    bars.selectAll("rect")
+      .transition()
+      .duration(3000)
+      .attr("height", function(d) {
+        return height - yScale(d.freeSpaces);
+      })
+      .style("fill", "black");
+
+    bars.selectAll("text")
+      .transition()
+      .duration(3000)
+      .tween("freeSpacesText", function(d) {
+        var i = d3.interpolate(this.textContent, d.freeSpaces);
+        return function(t) {
+          this.textContent = Math.round(i(t));
+        }
+      })
+
+    // remove old data
+    bars.exit()
+      .remove();
+  }
+
+  function updateBars(bars, xScale, yScale, height, barWidth) {
+
   }
 
   function cleanFeedForPlot(data) {
