@@ -1,3 +1,13 @@
 .bar text {
-  fill: white;
+  fill: black;
+}
+.axis path {
+  display: none;
+}
+.grid line {
+  stroke: lightgrey;
+  opacity: 0.7;
+}
+.grid text {
+  opacity: 0;
 }

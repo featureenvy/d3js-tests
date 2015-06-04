@@ -4,13 +4,15 @@
     <title>Parking Data</title>
     <meta charset="utf-8">
     <script src="d3.js" charset="utf-8"></script>
-    <script src="parking.js"></script>
+    <script src="parking_data.js"></script>
+    <script src="parking_plot.js"></script>
+    <script src="parking_main.js"></script>
     <link rel="stylesheet" href="parking.css" type="text/css">
   </head>
 
   <body>
     <div id="parkingPlot"></div>
-    <input type="button" onClick="parkingData[17].freeSpaces = 200; updateData()" value="200"></input>
-    <input type="button" onClick="parkingData[17].freeSpaces = 800; updateData()" value="800"></input>
+    <input type="button" onClick="parkingData[17].freeSpaces = 200; parkingData[17].additionalFreeSpaces = -799; updateData()" value="200"></input>
+    <input type="button" onClick="parkingData[17].freeSpaces = 999; parkingData[17].additionalFreeSpaces = 799; updateData()" value="800"></input>
 
   </body>
