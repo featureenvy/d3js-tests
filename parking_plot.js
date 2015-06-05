@@ -51,6 +51,7 @@
     barWidth = (chartDimensions.width / xScale.range().length) - 1;
     svg = appendSvg("#parkingPlot", containerDimensions, margins);
     appendNameAxis(svg, xScale, chartDimensions.height, barWidth);
+    appendSpacesAxis(svg, yScale)
   }
 
   function appendSvg(selector, containerDimensions, margins) {
@@ -83,6 +84,25 @@
       .call(nameGrid)
       .selectAll("line")
       .attr("transform", "translate(" + barWidth / 2 + ")");
+  }
+
+  function appendSpacesAxis(element, yScale) {
+    var spacesAxis = d3.svg.axis()
+      .scale(yScale)
+      .orient("left");
+
+    element.append("g")
+      .attr("class", "y axis")
+      .call(spacesAxis)
+
+    var spacesGrid = spacesAxis.orient("right")
+      .tickSize(chartDimensions.width, 0);
+
+    element.append("g")
+      .classed("y", true)
+      .classed("grid", true)
+      .call(spacesGrid)
+      .selectAll("line");
   }
 
   function drawBars(svg, data, xScale, yScale, height, barWidth) {
