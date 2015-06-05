@@ -8,7 +8,8 @@
 
   window.Parking.Data = {
     loadData: loadData,
-    loadAllDataForDay: loadAllDataForDay
+    loadAllDataForDay: loadAllDataForDay,
+    mergeData: mergeData
   };
 
   function loadAllDataForDay(day) {
